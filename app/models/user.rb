@@ -17,6 +17,20 @@ class User < ApplicationRecord
 
   validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: { maximum: 50 }, uniqueness: true
+  
+  def self.looks(content, method)
+    if method == "perfect_match"
+      @user = User.where("name LIKE?", "#{content}")
+    elsif method == "forward_match"
+      @user = User.where("name LIKE?", "#{content}%")
+    elsif method == "backward_match"
+      @user = User.where("name LIKE?", "%#{content}")
+    elsif method == "partial_match"
+      @user = User.where("name LIKE?", "%#{content}%")
+    else
+      @user = User.all
+    end
+  end
 
   def follow(user_id)
     relationships.create(followed_id: user_id)
